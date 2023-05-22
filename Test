@@ -95,9 +95,9 @@ void loop() {
   //delay(100); //Delay to avoid bounce
   }
  
-  int encValr = encred;
-  int encValg = encgreen;
-  int encValb = encblue;
+  int encValr = 0;
+  int encValg = 0;
+  int encValb = 0;
 
   switch (stateNum) {
     case 1:
@@ -134,4 +134,3 @@ void loop() {
   }
 
 }
-
