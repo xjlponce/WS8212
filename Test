@@ -1,0 +1,162 @@
+#include <FastLED.h>
+
+#define LED_PIN 5
+#define NUM_LEDS 48
+
+CRGB leds[NUM_LEDS];
+
+int stateNum = 0;
+
+int buttonPin = 4;
+int buttonState = 0;
+int lastButtonState = 0;
+int encPin1 = 2;
+int encPin2 = 3;
+//About brightness variables
+static boolean moving = false;
+volatile int encVal = 0;
+unsigned int lastEncVal = 1;
+boolean enc1 = false;
+boolean enc2 = false;
+
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(9600);
+  pinMode(buttonPin, INPUT);
+  digitalWrite(buttonPin, HIGH);
+  
+
+  FastLED.addLeds<WS2812, LED_PIN, GRB>(leds, NUM_LEDS);
+  attachInterrupt(0, intrEncChange1, CHANGE); //about encPin
+  attachInterrupt(1, intrEncChange2, CHANGE); //about encPin
+
+}
+void intrEncChange1() //Read on interrupt Right turn - Fast +4 //about encPin
+{
+  if(moving)
+    delay(1);
+    if(digitalRead(encPin1) == enc1)
+    return;
+    enc1 = !enc1;
+    if(enc1 && !enc2)
+    encVal += 4;
+    moving = false;
+  }
+ 
+void intrEncChange2() //Read on interrupt Left turn - Slow -2 //about encPin
+{
+  if(moving)
+    delay(1);
+    if(digitalRead(encPin2) == enc2)
+    return;
+    enc2 = !enc2;
+    if(enc2 && !enc1)
+    encVal -= 2;
+    moving = false;
+  }
+void loop() {
+  // put your main code here, to run repeatedly:
+  buttonState = digitalRead(buttonPin);
+
+  if (buttonState != lastButtonState) {
+    
+    if (buttonState == HIGH) {
+      stateNum++;
+   
+      if (stateNum > 4) {
+      
+        stateNum = 0;
+      }
+      Serial.println("on");
+      Serial.print("State Number: ");
+      Serial.println(stateNum);
+
+     
+    } else {
+      
+      Serial.println("off");
+    }
+  }
+
+
+  lastButtonState = buttonState;
+
+
+  if (encVal > 255) encVal = 255; //Loop Values
+  if (encVal < 0) encVal = 0;
+  if (encVal != lastEncVal) //Compare to previous pot value
+  {
+    lastEncVal = encVal; //Update encVal to reflect new value
+    Serial.print("Encoder Value: ");
+    Serial.println(encVal);
+  }
+  else
+  {
+  //delay(100); //Delay to avoid bounce
+  }
+  if (encVal > 255) encVal = 255; //Loop Values
+  if (encVal < 0) encVal = 0;
+  if (encVal != lastEncVal) //Compare to previous pot value
+  {
+    lastEncVal = encVal; //Update encVal to reflect new value
+    Serial.print("Encoder Value: ");
+    Serial.println(encVal);
+  }
+  else
+  {
+  //delay(100); //Delay to avoid bounce
+  }
+
+  if (encred > 255) encV = 255; //Loop Values
+  if (encVal < 0) encVal = 0;
+  if (encVal != lastEncVal) //Compare to previous pot value
+  {
+    lastEncVal = encVal; //Update encVal to reflect new value
+    Serial.print("Encoder Value: ");
+    Serial.println(encVal);
+  }
+  else
+  {
+  //delay(100); //Delay to avoid bounce
+  }
+
+  int encValr = encred;
+  int encValg = encgreen;
+  int encValb = encblue;
+
+  switch (stateNum) {
+    case 1:
+      Serial.println("1 Red");
+      for (int i = 0; i < NUM_LEDS; i++) {
+        leds[i] = CRGB(255 - encValr, 0, 0);
+      }
+      FastLED.show();
+      break;
+    case 2:
+      Serial.println("2 Green");
+      for (int i = 0; i < NUM_LEDS; i++) {
+        leds[i] = CRGB(0,255 - encValg, 0);
+      }
+      FastLED.show();
+      break;
+    case 3:
+      Serial.println("3 Blue");
+      for (int i = 0; i < NUM_LEDS; i++) {
+        leds[i] = CRGB(0, 0,255 - encValb);
+      }
+      FastLED.show();
+      break;
+    case 4:
+      Serial.println("Result");
+      for (int i = 0; i < NUM_LEDS; i++) {
+        leds[i] = CRGB(encValr, encValg,encValb);
+      }
+      FastLED.show();
+      break;
+    default:
+      Serial.println("Invalid state number");
+      break;
+  }
+
+}
+
