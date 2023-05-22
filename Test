@@ -94,32 +94,7 @@ void loop() {
   {
   //delay(100); //Delay to avoid bounce
   }
-  if (encVal > 255) encVal = 255; //Loop Values
-  if (encVal < 0) encVal = 0;
-  if (encVal != lastEncVal) //Compare to previous pot value
-  {
-    lastEncVal = encVal; //Update encVal to reflect new value
-    Serial.print("Encoder Value: ");
-    Serial.println(encVal);
-  }
-  else
-  {
-  //delay(100); //Delay to avoid bounce
-  }
-
-  if (encred > 255) encV = 255; //Loop Values
-  if (encVal < 0) encVal = 0;
-  if (encVal != lastEncVal) //Compare to previous pot value
-  {
-    lastEncVal = encVal; //Update encVal to reflect new value
-    Serial.print("Encoder Value: ");
-    Serial.println(encVal);
-  }
-  else
-  {
-  //delay(100); //Delay to avoid bounce
-  }
-
+ 
   int encValr = encred;
   int encValg = encgreen;
   int encValb = encblue;
