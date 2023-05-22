@@ -1,0 +1,34 @@
+#include <FastLED.h>
+
+// Define the number of LEDs on the strip.
+const int NUM_LEDS = 10;
+
+// Define the pin that the LED strip is connected to.
+const int LED_PIN = 5;
+
+// Create an array to store the LED colors.
+CRGB leds[NUM_LEDS];
+
+void setup() {
+  // Initialize the LED strip.
+  FastLED.addLeds<NEOPIXEL, LED_PIN>(leds, NUM_LEDS);
+
+  // Set the brightness of the LED strip.
+  FastLED.setBrightness(255);
+}
+
+void loop() {
+  // Generate a random color.
+  CRGB color = CHSV(random(255), 10, 255);
+
+  // Set the color of all the LEDs.
+  for (int i = 0; i < NUM_LEDS; i++) {
+    leds[i] = color;
+  }
+
+  // Show the colors on the LED strip.
+  FastLED.show();
+
+  // Wait a random amount of time before changing the colors.
+  delay(random(1000));
+}
