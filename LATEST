@@ -1,0 +1,121 @@
+#include <FastLED.h>
+
+#define LED_PIN 5
+#define NUM_LEDS 48
+#define CLK 2
+#define DT_PIN 3
+CRGB leds[NUM_LEDS];
+
+int stateNum = 0;
+
+int buttonPin = 4;
+int buttonState = 0;
+int lastButtonState = 0;
+
+//About brightness variables
+int redBrightness = 0;
+int greenBrightness = 0;
+int blueBrightness = 0;
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(9600);
+  pinMode(buttonPin, INPUT);
+  digitalWrite(buttonPin, HIGH);
+  
+  
+  FastLED.addLeds<WS2812, LED_PIN, GRB>(leds, NUM_LEDS);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  buttonState = digitalRead(buttonPin);
+
+  if (buttonState != lastButtonState) {
+    
+    if (buttonState == HIGH) {
+      stateNum++;
+   
+      if (stateNum > 4) {
+      
+        stateNum = 0;
+      }
+      Serial.println("on");
+      Serial.print("State Number: ");
+      Serial.println(stateNum);
+
+     
+    } else {
+      
+      Serial.println("off");
+    }
+  }
+  lastButtonState = buttonState;
+
+  
+
+
+  switch (stateNum) {
+    case 1:
+      Serial.println("1 Red");
+      for (int i = 0; i < NUM_LEDS; i++) {
+        leds[i] = CRGB(redBrightness , 0, 0);
+      }
+      FastLED.show();
+      break;
+    case 2:
+      Serial.println("2 Green");
+      for (int i = 0; i < NUM_LEDS; i++) {
+        leds[i] = CRGB(0,greenBrightness, 0);
+      }
+      FastLED.show();
+      break;
+    case 3:
+      Serial.println("3 Blue");
+      for (int i = 0; i < NUM_LEDS; i++) {
+        leds[i] = CRGB(0, 0,blueBrightness);
+      }
+      FastLED.show();
+      break;
+    case 4:
+      Serial.println("Result");
+      for (int i = 0; i < NUM_LEDS; i++) {
+        leds[i] = CRGB(0,0,0);
+      }
+      FastLED.show();
+      break;
+    default:
+      Serial.println("Invalid state number");
+      break;
+  }
+
+  if (buttonState == HIGH) {
+    if (stateNum == 1) {
+      if (digitalRead(CLK) == HIGH && digitalRead(DT_PIN) == LOW ) {
+        redBrightness++;
+      } else {
+        redBrightness--;
+      }
+      if(redBrightness >255){
+        redBrightness=255;
+      }
+      }
+    } else if (stateNum == 2) {
+      if (digitalRead(CLK) == HIGH && digitalRead(DT_PIN) == LOW ) {
+        greenBrightness++;
+      } else {
+        greenBrightness--;
+      }
+      if(greenBrightness >255){
+        greenBrightness=255;
+      }
+    } else if (stateNum == 3) {
+      if (digitalRead(CLK) == HIGH && digitalRead(DT_PIN) == LOW ) {
+        blueBrightness++;
+      } else {
+        blueBrightness--;
+      }
+      if(blueBrightness >255){
+        blueBrightness=255;
+      }
+    }
+  }
